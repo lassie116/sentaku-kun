@@ -300,10 +300,15 @@
         var self = this;
         $("#member-select").empty();
         $.each(members,function(){
-          var input_str = "<input type='checkbox' value='" + idx +
-                          "' class='member_selection' checked='" +
-                          self.selectable[idx] + "' />";
-          $("#member-select").append(input_str + this.name);
+          var input = $("<input>", {
+            type: "checkbox",
+            value: idx,
+            id: this.id,
+            class: "member_selection",
+            checked: self.selectable[idx],
+          });
+          var label = $("<label>", { for: this.id }).text(this.name);
+          $("#member-select").append(input).append(label);
           idx++;
         });
     }
@@ -411,9 +416,9 @@ h1 {
 <div id="config">
     表示
     <input type="checkbox" class="config-btn" name="id-mode" value="id-mode" id="btn-id-mode" checked="false">
-    <label>IDで表示</label>
+    <label for="btn-id-mode">IDで表示</label>
     <input type="checkbox" class="config-btn" name="id-table" value="id-table" id="btn-id-table">
-    <label>ID対応表</label>
+    <label for="btn-id-table">ID対応表</label>
 </div>
 <h4>この人達から選ぶ</h4>
 <div id="member-select"></div>
