@@ -309,7 +309,6 @@
     }
 
     RelayMemberSelector.prototype.showName = function(option) {
-    
     	$('#name_table').empty();
     	for (var idx in members)
     	{
@@ -322,16 +321,23 @@
 	          + '</tr>'
 	        );
 	    }
-    
+      if (option['id-table']) {
+        $('#member_profile').show();
+      } else {
+        $('#member_profile').hide();
+      }
     }
+
 
     $(function() {
         relaySelector = new RelayMemberSelector();
         relaySelector.setMembers(members);
         relaySelector.setNotes(notes);
         option = {
-          'id-mode': document.getElementById("btn-id-mode").checked
+          'id-mode': document.getElementById("btn-id-mode").checked,
+          'id-table': document.getElementById("btn-id-table").checked
         };
+        relaySelector.showName(option);
         console.log(option);
         // selectタグの中身を入れる
         $.each(members, function() {
@@ -355,12 +361,14 @@
           var target = e.target;
           var value = target.value;
           // console.log(option, target, value);
-          if (value == 'id-mode') {
-            option['id-mode'] = target.checked;
-            relaySelector.showResults(option);
-          } else {
-            option['id-table'] = target.checked;
-            relaySelector.showName(option);
+          switch (value) {
+            case 'id-mode':
+              option['id-mode'] = target.checked;
+              relaySelector.showResults(option);
+              break;
+            case 'id-table':
+              option['id-table'] = target.checked;
+              relaySelector.showName(option);
           }
         });
     });
@@ -404,7 +412,7 @@ h1 {
     表示
     <input type="checkbox" class="config-btn" name="id-mode" value="id-mode" id="btn-id-mode" checked="false">
     <label>IDで表示</label>
-    <input type="checkbox" class="config-btn" name="id-table" value="id-table" id="btn2">
+    <input type="checkbox" class="config-btn" name="id-table" value="id-table" id="btn-id-table">
     <label>ID対応表</label>
 </div>
 <h4>この人達から選ぶ</h4>
@@ -429,7 +437,7 @@ h1 {
     </select><br>
 </div>
 
-<table border="1">
+<table border="1" id="member_profile">
     <thead>
     <tr>
         <th class="name">name</th>
