@@ -7,29 +7,28 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 <script type="text/javascript">
     var members = [
-        { name: 'かまぼこ', id: 'kamaboko21', rate: 2764,  },
-        { name: 'みるふぃ', id: 'millfy', rate: 2748,  },
-        { name: '木箱', id: 'BLACK.RX', rate: 2142 },
-        { name: 'ゆー', id: 'alla breve', rate: 2115 },
-        { name: 'てっそ', id: 'DragonQuarter', rate: 1936 },
-        { name: 'tr', id: 'merumon', rate: 1732 },
-        { name: 'ニノン', id: 'transition_game', rate: 1724 },
-        { name: 'いまい', id: 'megane-wo-gurun', rate: 1717 },
-        { name: 'かーみ', id: 'G.G.ka-mi', rate: 1695},
-        { name: 'さぼり', id: 'sawarin', rate: 1671 },
-        { name: 'DoG', id: 'skziun', rate: 1655 },
-        { name: '半袖', id: 'cosmotown', rate: 1100 },
-        { name: 'あひる', id: 'ahirutueee', rate: 966 },
-        { name: 'ゼノフォべ', id: 'xenophobe', rate: 946 },
-        { name: '牛乳', id: 'sunnyspot', rate: 919 },
-        { name: 'よかおじ', id: 'SPACEACE', rate: 773 },
-        { name: 'やくたみ', id: 'itirin', rate: 640 },
-        { name: 'サンダー', id: 'thunder9', rate: 624 },
-        { name: '佐賀', id: 'shigasan', rate: 515 },
-        { name: 'うどん', id: '3cha-man', rate: 508 },
-        { name: '箙', id: 'Quiver_algebra', rate: 479 }
+        { name: 'かまぼこ', id: 'kamaboko21', rate: 2764, max:2926  },
+        { name: 'みるふぃ', id: 'millfy', rate: 2748, max:2748  },
+        { name: '木箱', id: 'BLACK.RX', rate: 2142, max:2142 },
+        { name: 'ゆー', id: 'alla breve', rate: 2115, max:2224 },
+        { name: 'てっそ', id: 'DragonQuarter', rate: 1936, max:2167 },
+        { name: 'tr', id: 'merumon', rate: 1732, max:1732 },
+        { name: 'ニノン', id: 'transition_game', rate: 1724, max:1791 },
+        { name: 'いまい', id: 'megane-wo-gurun', rate: 1717, max:1717 },
+        { name: 'かーみ', id: 'G.G.ka-mi', rate: 1695, max:2014},
+        { name: 'さぼり', id: 'sawarin', rate: 1671, max:1790 },
+        { name: 'DoG', id: 'skziun', rate: 1655, max: 1655 },
+        { name: '半袖', id: 'cosmotown', rate: 1100, max:1114 },
+        { name: 'あひる', id: 'ahirutueee', rate: 966, max:1069 },
+        { name: 'ゼノフォべ', id: 'xenophobe', rate: 946, max:946 },
+        { name: '牛乳', id: 'sunnyspot', rate: 919, max:924 },
+        { name: 'よかおじ', id: 'SPACEACE', rate: 773, max:1005 },
+        { name: 'やくたみ', id: 'itirin', rate: 640, max:640 },
+        { name: 'サンダー', id: 'thunder9', rate: 624, max:747 },
+        { name: '佐賀', id: 'shigasan', rate: 515, max:693 },
+        { name: 'うどん', id: '3cha-man', rate: 508, max:681 },
+        { name: '箙', id: 'Quiver_algebra', rate: 479, max:532 }
     ];
-
     var notes = [
         // 基準値超え
         //{
@@ -102,7 +101,6 @@
             note: 'おしえて！かーみ先生！ ～ぬるま湯脱出への道～ (半袖案)'
         }
     ];
-
     var RelayMemberSelector = function() {
         this.members = null;
         this.maxRate = 6400; // 上限レート
@@ -113,13 +111,11 @@
         this.combinationList = [];
         this.notes = {};
     };
-
     RelayMemberSelector.prototype.setMembers = function(members) {
         var self = this;
         self.members = members;
         self.n = members.length;
     };
-
     RelayMemberSelector.prototype.setNotes = function(notes) {
         var self = this;
         self.notes = {};
@@ -138,17 +134,14 @@
             }
         }
     };
-
     RelayMemberSelector.prototype.setSelectedMember = function() {
         var self = this;
         var selectedCount = 0;
-
         // 一旦全て未選択にする
         for (var i = 0; i < self.members.length; i++) {
             self.members[i].selected = false;
         }
-
-        // #member1〜3で選択中の値を取得してself.combinationの値にする
+        // #member103で選択中の値を取得してself.combinationの値にする
         for (var i = 1; i <= 3; i++) {
             if ($('#member' + i).val()) {
                 var index;
@@ -160,7 +153,6 @@
         }
         return selectedCount;
     };
-
     RelayMemberSelector.prototype.getMemberIndexbyName = function(name) {
         var self = this;
         for (var i = 0; i < self.members.length; i++) {
@@ -170,31 +162,24 @@
         }
         return null;
     };
-
     RelayMemberSelector.prototype.getCombinations = function() {
         var self = this;
         var depth = 0;
         var curIndex = 0;
-
         this.combinationList = [];
         var selectedCount = self.setSelectedMember();
         depth += selectedCount;
         self._getCombinations(curIndex, depth);
-
         return self.combinationList;
     };
-
     RelayMemberSelector.prototype._getCombinations = function(curIndex, depth) {
         var self = this;
-
         if (depth < self.k) {
             for (var i = curIndex; i < self.n; i++) {
-
                 // 選択済みはスキップ
                 if (self.members[i].selected) {
                     continue;
                 }
-
                 self.combination[depth] = i;
                 self._getCombinations(i + 1, depth + 1);
             }
@@ -203,14 +188,13 @@
             if (sum > self.maxRate || sum < self.minRate) {
                 return;
             }
-
+            var maxrate = self.sumMaxrate(self.combination);
             var names = self.getMemberNamesByCombination(self.combination);
             var ids = self.getMemberIdsByCombination(self.combination);
             var note = self.getNoteByCombination(self.combination);
-            self.combinationList.push({ names: names, ids: ids, rate: sum, note: note });
+            self.combinationList.push({ names: names, ids: ids, rate: sum, max: maxrate, note: note });
         }
     };
-
     RelayMemberSelector.prototype.sumRate = function(combination) {
         var self = this;
         var sum = 0;
@@ -220,7 +204,15 @@
         }
         return sum;
     };
-
+    RelayMemberSelector.prototype.sumMaxrate = function(combination) {
+        var self = this;
+        var sum = 0;
+        for (var i = 0; i < self.k; i++) {
+            var index = combination[i];
+            sum += self.members[index].max;
+        }
+        return sum;
+    };
     RelayMemberSelector.prototype.getMemberNamesByCombination = function(combination) {
         var self = this;
         var names = [];
@@ -230,7 +222,6 @@
         }
         return names;
     };
-
     RelayMemberSelector.prototype.getMemberIdsByCombination = function(combination) {
         var self = this;
         var ids = [];
@@ -240,13 +231,11 @@
         }
         return ids;
     };
-
     RelayMemberSelector.prototype.getNoteByCombination = function(combination) {
         var self = this;
         var key = self.toKey(combination);
         return (key in self.notes) ? self.notes[key].note : '';
     };
-
     RelayMemberSelector.prototype.toKey = function(combination) {
         var self = this;
         var key = 0;
@@ -255,7 +244,6 @@
         }
         return key;
     };
-
     RelayMemberSelector.prototype.showResults = function(option) {
       var self = this;
       var combinations = self.getCombinations();
@@ -281,12 +269,12 @@
           + '<td>' + labels[2] + '</td>'
           + '<td>' + labels[3] + '</td>'
           + '<td>' + this.rate + '</td>'
+          + '<td>' + this.max  + '</td>'
           + '<td>' + this.note + '</td>'
           + '</tr>'
         );
       });
     };
-
     $(function() {
         relaySelector = new RelayMemberSelector();
         relaySelector.setMembers(members);
@@ -294,19 +282,17 @@
         option = {
           'id-mode': document.getElementById("btn-id-mode").checked
         };
-        //console.log(option);
+        console.log(option);
         // selectタグの中身を入れる
         $.each(members, function() {
             $('#member1').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
             $('#member2').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
             $('#member3').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
         });
-
         $('#member1, #member2, #member3').on('change', function() {
           relaySelector.showResults(option);
         });
         $('#member1').trigger('change');
-
         $('.config-btn').on('change', function(e) {
           var target = e.target;
           var value = target.value;
@@ -315,9 +301,7 @@
             option['id-mode'] = target.checked;
             relaySelector.showResults(option);
           } else {
-
           }
-
         });
     });
 </script>
@@ -359,11 +343,9 @@ h1 {
 <div id="config">
     表示
     <input type="checkbox" class="config-btn" name="id-mode" value="id-mode" id="btn-id-mode" checked="false">
-    <label for="btn-id-mode">IDで表示</label>
-    <!--
+    <label>IDで表示</label>
     <input type="checkbox" class="config-btn" name="id-table" value="1" id="btn2">
     <label>ID対応表</label>
-    -->
 </div>
 
 <div>
@@ -388,6 +370,7 @@ h1 {
         <th class="cell3">3</th>
         <th class="cell4">4</th>
         <th class="cell5">sum</th>
+        <th class="cell5">potential</th>
         <th class="cell6">note</th>
     </tr>
     </thead>
