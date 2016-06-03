@@ -1,266 +1,266 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>リレーメンバー選択くん</title>
+  <meta charset="UTF-8">
+  <title>リレーメンバー選択くん</title>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script type="text/javascript">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <script type="text/javascript">
     var members = [
-        { name: 'かまぼこ', id: 'kamaboko21', rate: 2764, max:2926, type: '居飛車'  },
-        { name: 'みるふぃ', id: 'millfy', rate: 2748, max:2748, type: '左美濃'  },
-        { name: '木箱', id: 'BLACK.RX', rate: 2142, max:2142, type: '居飛車' },
-        { name: 'ゆー', id: 'alla breve', rate: 2115, max:2224, type: '居飛車' },
-        { name: 'てっそ', id: 'DragonQuarter', rate: 1936, max:2167, type: '振り飛車' },
-        { name: 'tr', id: 'merumon', rate: 1732, max:1732, type: '左美濃' },
-        { name: 'ニノン', id: 'transition_game', rate: 1724, max:1791, type: '居飛車' },
-        { name: 'いまい', id: 'megane-wo-gurun', rate: 1717, max:1717, type: '居飛車' },
-        { name: 'かーみ', id: 'G.G.ka-mi', rate: 1695, max:2014, type: '振り飛車'},
-        { name: 'さぼり', id: 'sawarin', rate: 1671, max:1790, type: '居飛車' },
-        { name: 'DoG', id: 'skziun', rate: 1655, max: 1655, type: '振り飛車' },
-        { name: '半袖', id: 'cosmotown', rate: 1100, max:1114, type: '振り飛車' },
-        { name: 'あひる', id: 'ahirutueee', rate: 966, max:1069, type: 'あひる' },
-        { name: 'ゼノフォべ', id: 'xenophobe', rate: 946, max:946, type: '振り飛車' },
-        { name: '牛乳', id: 'sunnyspot', rate: 919, max:924, type: '振り飛車' },
-        { name: 'よかおじ', id: 'SPACEACE', rate: 773, max:1005, type: '居飛車' },
-        { name: 'やくたみ', id: 'itirin', rate: 640, max:640, type: '居飛車' },
-        { name: 'サンダー', id: 'thunder9', rate: 624, max:747, type: '振り飛車' },
-        { name: '佐賀', id: 'shigasan', rate: 515, max:693, type: 'オールラウンダー' },
-        { name: 'うどん', id: '3cha-man', rate: 508, max:681, type: '振り飛車' },
-        { name: '箙', id: 'Quiver_algebra', rate: 479, max:532, type: '居飛車' }
+      { name: 'かまぼこ', id: 'kamaboko21', rate: 2764, max:2926, type: '居飛車'  },
+      { name: 'みるふぃ', id: 'millfy', rate: 2748, max:2748, type: '左美濃'  },
+      { name: '木箱', id: 'BLACK.RX', rate: 2142, max:2142, type: '居飛車' },
+      { name: 'ゆー', id: 'alla breve', rate: 2115, max:2224, type: '居飛車' },
+      { name: 'てっそ', id: 'DragonQuarter', rate: 1936, max:2167, type: '振り飛車' },
+      { name: 'tr', id: 'merumon', rate: 1732, max:1732, type: '左美濃' },
+      { name: 'ニノン', id: 'transition_game', rate: 1724, max:1791, type: '居飛車' },
+      { name: 'いまい', id: 'megane-wo-gurun', rate: 1717, max:1717, type: '居飛車' },
+      { name: 'かーみ', id: 'G.G.ka-mi', rate: 1695, max:2014, type: '振り飛車'},
+      { name: 'さぼり', id: 'sawarin', rate: 1671, max:1790, type: '居飛車' },
+      { name: 'DoG', id: 'skziun', rate: 1655, max: 1655, type: '振り飛車' },
+      { name: '半袖', id: 'cosmotown', rate: 1100, max:1114, type: '振り飛車' },
+      { name: 'あひる', id: 'ahirutueee', rate: 966, max:1069, type: 'あひる' },
+      { name: 'ゼノフォべ', id: 'xenophobe', rate: 946, max:946, type: '振り飛車' },
+      { name: '牛乳', id: 'sunnyspot', rate: 919, max:924, type: '振り飛車' },
+      { name: 'よかおじ', id: 'SPACEACE', rate: 773, max:1005, type: '居飛車' },
+      { name: 'やくたみ', id: 'itirin', rate: 640, max:640, type: '居飛車' },
+      { name: 'サンダー', id: 'thunder9', rate: 624, max:747, type: '振り飛車' },
+      { name: '佐賀', id: 'shigasan', rate: 515, max:693, type: 'オールラウンダー' },
+      { name: 'うどん', id: '3cha-man', rate: 508, max:681, type: '振り飛車' },
+      { name: '箙', id: 'Quiver_algebra', rate: 479, max:532, type: '居飛車' }
     ];
     var notes = [
-        // 基準値超え
-        //{
-        //    names: ['transition_game', 'alla breve', 'BLACK.RX', 'thunder9'],
-        //    note: 'ニノンと謎川と私 (2012年)'
-        //},
-        {
-            names: ['sawarin', 'cosmotown', 'sunnyspot', 'shigasan'],
-            note: 'タラバガニだいすき (2013年)'
-        },
-        {
-            names: ['kamaboko21', 'alla breve', 'sunnyspot', 'shigasan'],
-            note: 'ピアキャス将棋部オールスターズ (2014年、2015年)'
-        },
-        {
-            names: ['kamaboko21', 'BLACK.RX', 'sunnyspot', 'shigasan'],
-            note: 'ピアキャス将棋部オールスターズ (2014年、2015年)'
-        },
-        // 基準値超え
-        //{
-        //    names: ['BLACK.RX', 'transition_game', 'megane-wo-gurun', 'ahirutueee'],
-        //    note: 'Duckin\' Upper (2014年)'
-        //},
-        {
-            names: ['G.G.ka-mi', 'sawarin', 'cosmotown', '3cha-man'],
-            note: 'ピアキャス将棋部3軍 (2014年)'
-        },
-        {
-            names: ['transition_game', 'G.G.ka-mi', 'sawarin', 'itirin'],
-            note: 'チャンネル登録者約5541人 (2015年)'
-        },
-        {
-            names: ['DragonQuarter', 'megane-wo-gurun', 'cosmotown', 'xenophobe'],
-            note: '桃尻ズ (2015年)'
-        },
-        {
-            names: ['merumon', 'skziun', 'ahirutueee', '3cha-man'],
-            note: 'うどんJAPAN (2015年)'
-        },
-        {
-            names: ['merumon', 'G.G.ka-mi', 'skziun', 'ahirutueee'],
-            note: 'かーみJAPAN (うどん案)'
-        },
-        {
-            names: ['merumon', 'megane-wo-gurun', 'skziun', 'ahirutueee'],
-            note: 'プログラマーチーム (いまい案)'
-        },
-        {
-            names: ['merumon', 'megane-wo-gurun', 'skziun', 'itirin'],
-            note: 'プログラマーチームwithデバッガーやくたみ (いまい案)'
-        },
-        {
-            names: ['BLACK.RX', 'transition_game', 'sawarin', 'SPACEACE'],
-            note: 'こういうのでたのまい byニノン'
-        },
-        {
-            names: ['alla breve', 'merumon', 'transition_game', 'SPACEACE'],
-            note: 'こういうのでたのまい byニノン'
-        },
-        {
-            names: ['DragonQuarter', 'G.G.ka-mi', 'skziun', 'cosmotown'],
-            note: 'めっちゃつよそう byあひる'
-        },
-        {
-            names: ['kamaboko21', 'DragonQuarter', 'cosmotown', 'shigasan'],
-            note: 'ぼくがかんがえたさいきょうのふりびしゃちーむ byてっそ'
-        },
-        {
-            names: ['G.G.ka-mi', 'cosmotown', 'ahirutueee', 'SPACEACE'],
-            note: 'おしえて！かーみ先生！ ～ぬるま湯脱出への道～ (半袖案)'
-        }
+      // 基準値超え
+      //{
+      //    names: ['transition_game', 'alla breve', 'BLACK.RX', 'thunder9'],
+      //    note: 'ニノンと謎川と私 (2012年)'
+      //},
+      {
+        names: ['sawarin', 'cosmotown', 'sunnyspot', 'shigasan'],
+        note: 'タラバガニだいすき (2013年)'
+      },
+      {
+        names: ['kamaboko21', 'alla breve', 'sunnyspot', 'shigasan'],
+        note: 'ピアキャス将棋部オールスターズ (2014年、2015年)'
+      },
+      {
+        names: ['kamaboko21', 'BLACK.RX', 'sunnyspot', 'shigasan'],
+        note: 'ピアキャス将棋部オールスターズ (2014年、2015年)'
+      },
+      // 基準値超え
+      //{
+      //    names: ['BLACK.RX', 'transition_game', 'megane-wo-gurun', 'ahirutueee'],
+      //    note: 'Duckin\' Upper (2014年)'
+      //},
+      {
+        names: ['G.G.ka-mi', 'sawarin', 'cosmotown', '3cha-man'],
+        note: 'ピアキャス将棋部3軍 (2014年)'
+      },
+      {
+        names: ['transition_game', 'G.G.ka-mi', 'sawarin', 'itirin'],
+        note: 'チャンネル登録者約5541人 (2015年)'
+      },
+      {
+        names: ['DragonQuarter', 'megane-wo-gurun', 'cosmotown', 'xenophobe'],
+        note: '桃尻ズ (2015年)'
+      },
+      {
+        names: ['merumon', 'skziun', 'ahirutueee', '3cha-man'],
+        note: 'うどんJAPAN (2015年)'
+      },
+      {
+        names: ['merumon', 'G.G.ka-mi', 'skziun', 'ahirutueee'],
+        note: 'かーみJAPAN (うどん案)'
+      },
+      {
+        names: ['merumon', 'megane-wo-gurun', 'skziun', 'ahirutueee'],
+        note: 'プログラマーチーム (いまい案)'
+      },
+      {
+        names: ['merumon', 'megane-wo-gurun', 'skziun', 'itirin'],
+        note: 'プログラマーチームwithデバッガーやくたみ (いまい案)'
+      },
+      {
+        names: ['BLACK.RX', 'transition_game', 'sawarin', 'SPACEACE'],
+        note: 'こういうのでたのまい byニノン'
+      },
+      {
+        names: ['alla breve', 'merumon', 'transition_game', 'SPACEACE'],
+        note: 'こういうのでたのまい byニノン'
+      },
+      {
+        names: ['DragonQuarter', 'G.G.ka-mi', 'skziun', 'cosmotown'],
+        note: 'めっちゃつよそう byあひる'
+      },
+      {
+        names: ['kamaboko21', 'DragonQuarter', 'cosmotown', 'shigasan'],
+        note: 'ぼくがかんがえたさいきょうのふりびしゃちーむ byてっそ'
+      },
+      {
+        names: ['G.G.ka-mi', 'cosmotown', 'ahirutueee', 'SPACEACE'],
+        note: 'おしえて！かーみ先生！ ～ぬるま湯脱出への道～ (半袖案)'
+      }
     ];
     var RelayMemberSelector = function() {
-        this.members = null;
-        this.maxRate = 6400; // 上限レート
-        this.minRate = 4000; // 下限レート
-        this.n = null;
-        this.k = 4;
-        this.combination = [];
-        this.combinationList = [];
-        this.notes = {};
-        this.selectable = []; // 選択する候補にいれるかどうか
+      this.members = null;
+      this.maxRate = 6400; // 上限レート
+      this.minRate = 4000; // 下限レート
+      this.n = null;
+      this.k = 4;
+      this.combination = [];
+      this.combinationList = [];
+      this.notes = {};
+      this.selectable = []; // 選択する候補にいれるかどうか
     };
     RelayMemberSelector.prototype.setMembers = function(members) {
-        var self = this;
-        self.members = members;
-        self.n = members.length;
-        for (var i = 0,l=members.length;i<l;i++){
-          self.selectable[i] = true;
-        }
+      var self = this;
+      self.members = members;
+      self.n = members.length;
+      for (var i = 0,l=members.length;i<l;i++){
+        self.selectable[i] = true;
+      }
     };
     RelayMemberSelector.prototype.setNotes = function(notes) {
-        var self = this;
-        self.notes = {};
-        for (var noteIndex = 0; noteIndex < notes.length; noteIndex++) {
-            var combination = [];
-            for (var i = 0; i < self.k; i++) {
-                for (var j = 0; j < self.members.length; j++) {
-                    if (notes[noteIndex].names[i] == self.members[j].id) {
-                        combination.push(j);
-                        continue;
-                    }
-                }
+      var self = this;
+      self.notes = {};
+      for (var noteIndex = 0; noteIndex < notes.length; noteIndex++) {
+        var combination = [];
+        for (var i = 0; i < self.k; i++) {
+          for (var j = 0; j < self.members.length; j++) {
+            if (notes[noteIndex].names[i] == self.members[j].id) {
+              combination.push(j);
+              continue;
             }
-            if (combination.length == 4) {
-                self.notes[self.toKey(combination)] = notes[noteIndex];
-            }
+          }
         }
+        if (combination.length == 4) {
+          self.notes[self.toKey(combination)] = notes[noteIndex];
+        }
+      }
     };
     RelayMemberSelector.prototype.setSelectedMember = function() {
-        var self = this;
-        var selectedCount = 0;
-        // 一旦全て未選択にする
-        for (var i = 0; i < self.members.length; i++) {
-            self.members[i].selected = false;
-        }
+      var self = this;
+      var selectedCount = 0;
+      // 一旦全て未選択にする
+      for (var i = 0; i < self.members.length; i++) {
+        self.members[i].selected = false;
+      }
 
-        // 除外する人
+      // 除外する人
+      {
+        var index;
+        index=self.getMemberIndexbyName($('#member' + 4).val());
+        if(index != null)
         {
-	        var index;
-	        index=self.getMemberIndexbyName($('#member' + 4).val());
-	        if(index != null)
-	        {
-   			    self.members[index].selected = true;
-   			}
+          self.members[index].selected = true;
         }
-        // #member103で選択中の値を取得してself.combinationの値にする
-        for (var i = 1; i <= 3; i++) {
-            if ($('#member' + i).val()) {
-                var index;
-                if (null !== (index = self.getMemberIndexbyName($('#member' + i).val()))) {
-                    self.members[index].selected = true;
-                    self.combination[selectedCount++] = index;
-                }
-            }
+      }
+      // #member103で選択中の値を取得してself.combinationの値にする
+      for (var i = 1; i <= 3; i++) {
+        if ($('#member' + i).val()) {
+          var index;
+          if (null !== (index = self.getMemberIndexbyName($('#member' + i).val()))) {
+            self.members[index].selected = true;
+            self.combination[selectedCount++] = index;
+          }
         }
-        return selectedCount;
+      }
+      return selectedCount;
     };
     RelayMemberSelector.prototype.getMemberIndexbyName = function(name) {
-        var self = this;
-        for (var i = 0; i < self.members.length; i++) {
-            if (self.members[i].name == name) {
-                return i;
-            }
+      var self = this;
+      for (var i = 0; i < self.members.length; i++) {
+        if (self.members[i].name == name) {
+          return i;
         }
-        return null;
+      }
+      return null;
     };
     RelayMemberSelector.prototype.getCombinations = function() {
-        var self = this;
-        var depth = 0;
-        var curIndex = 0;
-        this.combinationList = [];
-        var selectedCount = self.setSelectedMember();
-        depth += selectedCount;
-        self._getCombinations(curIndex, depth);
-        return self.combinationList;
+      var self = this;
+      var depth = 0;
+      var curIndex = 0;
+      this.combinationList = [];
+      var selectedCount = self.setSelectedMember();
+      depth += selectedCount;
+      self._getCombinations(curIndex, depth);
+      return self.combinationList;
     };
     RelayMemberSelector.prototype._getCombinations = function(curIndex, depth) {
-        var self = this;
-        if (depth < self.k) {
-            for (var i = curIndex; i < self.n; i++) {
-                // 選択済みはスキップ
-                if (self.members[i].selected) {
-                    continue;
-                }
-                // 候補にはいっていない人もスキップ
-                if (!self.selectable[i]) {
-                    continue;
-                }
-                self.combination[depth] = i;
-                self._getCombinations(i + 1, depth + 1);
-            }
-        } else {
-            var sum = self.sumRate(self.combination);
-            if (sum > self.maxRate || sum < self.minRate) {
-                return;
-            }
-            var maxrate = self.sumMaxrate(self.combination);
-            var names = self.getMemberNamesByCombination(self.combination);
-            var ids = self.getMemberIdsByCombination(self.combination);
-            var note = self.getNoteByCombination(self.combination);
-            self.combinationList.push({ names: names, ids: ids, rate: sum, max: maxrate, note: note });
+      var self = this;
+      if (depth < self.k) {
+        for (var i = curIndex; i < self.n; i++) {
+          // 選択済みはスキップ
+          if (self.members[i].selected) {
+            continue;
+          }
+          // 候補にはいっていない人もスキップ
+          if (!self.selectable[i]) {
+            continue;
+          }
+          self.combination[depth] = i;
+          self._getCombinations(i + 1, depth + 1);
         }
+      } else {
+        var sum = self.sumRate(self.combination);
+        if (sum > self.maxRate || sum < self.minRate) {
+          return;
+        }
+        var maxrate = self.sumMaxrate(self.combination);
+        var names = self.getMemberNamesByCombination(self.combination);
+        var ids = self.getMemberIdsByCombination(self.combination);
+        var note = self.getNoteByCombination(self.combination);
+        self.combinationList.push({ names: names, ids: ids, rate: sum, max: maxrate, note: note });
+      }
     };
     RelayMemberSelector.prototype.sumRate = function(combination) {
-        var self = this;
-        var sum = 0;
-        for (var i = 0; i < self.k; i++) {
-            var index = combination[i];
-            sum += self.members[index].rate;
-        }
-        return sum;
+      var self = this;
+      var sum = 0;
+      for (var i = 0; i < self.k; i++) {
+        var index = combination[i];
+        sum += self.members[index].rate;
+      }
+      return sum;
     };
     RelayMemberSelector.prototype.sumMaxrate = function(combination) {
-        var self = this;
-        var sum = 0;
-        for (var i = 0; i < self.k; i++) {
-            var index = combination[i];
-            sum += self.members[index].max;
-        }
-        return sum;
+      var self = this;
+      var sum = 0;
+      for (var i = 0; i < self.k; i++) {
+        var index = combination[i];
+        sum += self.members[index].max;
+      }
+      return sum;
     };
     RelayMemberSelector.prototype.getMemberNamesByCombination = function(combination) {
-        var self = this;
-        var names = [];
-        for (var i = 0; i < self.k; i++) {
-            var index = combination[i];
-            names.push(self.members[index].name);
-        }
-        return names;
+      var self = this;
+      var names = [];
+      for (var i = 0; i < self.k; i++) {
+        var index = combination[i];
+        names.push(self.members[index].name);
+      }
+      return names;
     };
     RelayMemberSelector.prototype.getMemberIdsByCombination = function(combination) {
-        var self = this;
-        var ids = [];
-        for (var i = 0; i < self.k; i++) {
-            var index = combination[i];
-            ids.push(self.members[index].id);
-        }
-        return ids;
+      var self = this;
+      var ids = [];
+      for (var i = 0; i < self.k; i++) {
+        var index = combination[i];
+        ids.push(self.members[index].id);
+      }
+      return ids;
     };
     RelayMemberSelector.prototype.getNoteByCombination = function(combination) {
-        var self = this;
-        var key = self.toKey(combination);
-        return (key in self.notes) ? self.notes[key].note : '';
+      var self = this;
+      var key = self.toKey(combination);
+      return (key in self.notes) ? self.notes[key].note : '';
     };
     RelayMemberSelector.prototype.toKey = function(combination) {
-        var self = this;
-        var key = 0;
-        for (var i = 0; i < self.k; i++) {
-            key |= Math.pow(2, combination[i]);	//membersが32以上だと動かない
-        }
-        return key;
+      var self = this;
+      var key = 0;
+      for (var i = 0; i < self.k; i++) {
+        key |= Math.pow(2, combination[i]);	//membersが32以上だと動かない
+      }
+      return key;
     };
     RelayMemberSelector.prototype.showResults = function(option) {
       var self = this;
@@ -282,50 +282,50 @@
           labels = this.names;
         }
         $('#result').append(
-          '<tr>'
-          + '<td>' + labels[0] + '</td>'
-          + '<td>' + labels[1] + '</td>'
-          + '<td>' + labels[2] + '</td>'
-          + '<td>' + labels[3] + '</td>'
-          + '<td>' + this.rate + '</td>'
-          + '<td>' + this.max  + '</td>'
-          + '<td>' + this.note + '</td>'
-          + '</tr>'
-        );
+            '<tr>'
+            + '<td>' + labels[0] + '</td>'
+            + '<td>' + labels[1] + '</td>'
+            + '<td>' + labels[2] + '</td>'
+            + '<td>' + labels[3] + '</td>'
+            + '<td>' + this.rate + '</td>'
+            + '<td>' + this.max  + '</td>'
+            + '<td>' + this.note + '</td>'
+            + '</tr>'
+            );
       });
     };
 
     RelayMemberSelector.prototype.showMembers = function() {
-        var idx = 0;
-        var self = this;
-        $("#member-select").empty();
-        $.each(members,function(){
-          var input = $("<input>", {
-            type: "checkbox",
-            value: idx,
-            id: this.id,
-            class: "member_selection",
-            checked: self.selectable[idx],
-          });
-          var label = $("<label>", { for: this.id }).text(this.name);
-          $("#member-select").append(input).append(label);
-          idx++;
+      var idx = 0;
+      var self = this;
+      $("#member-select").empty();
+      $.each(members,function(){
+        var input = $("<input>", {
+          type: "checkbox",
+          value: idx,
+          id: this.id,
+          class: "member_selection",
+          checked: self.selectable[idx],
         });
+        var label = $("<label>", { for: this.id }).text(this.name);
+        $("#member-select").append(input).append(label);
+        idx++;
+      });
     }
 
     RelayMemberSelector.prototype.showName = function(option) {
-    	$('#name_table').empty();
-    	for (var idx in members)
-    	{
-	        $('#name_table').append(
-	          '<tr>'
-	          + '<td>' + members[idx].name + '</td>'
-	          + '<td>' + members[idx].id + '</td>'
-	          + '<td>' + members[idx].rate + '</td>'
-	          + '<td>' + members[idx].type + '</td>'
-	          + '</tr>'
-	        );
-	    }
+      $('#name_table').empty();
+      for (var idx in members)
+      {
+        $('#name_table').append(
+            '<tr>'
+            + '<td>' + members[idx].name + '</td>'
+            + '<td>' + members[idx].id + '</td>'
+            + '<td>' + members[idx].rate + '</td>'
+            + '<td>' + members[idx].type + '</td>'
+            + '</tr>'
+            );
+      }
       if (option['id-table']) {
         $('#member_profile').show();
       } else {
@@ -335,116 +335,114 @@
 
 
     $(function() {
-        relaySelector = new RelayMemberSelector();
-        relaySelector.setMembers(members);
-        relaySelector.setNotes(notes);
-        option = {
-          'id-mode': document.getElementById("btn-id-mode").checked,
-          'id-table': document.getElementById("btn-id-table").checked
-        };
-        relaySelector.showName(option);
-        console.log(option);
-        // selectタグの中身を入れる
-        $.each(members, function() {
-            $('#member1').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
-            $('#member2').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
-            $('#member3').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
-            $('#member4').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
-        });
-        $('#member1, #member2, #member3, #member4').on('change', function() {
-          relaySelector.showResults(option);
-        });
-        relaySelector.showMembers();
-        $('.member_selection').on('change', function(e) {
-          var input_obj = e.target;
-          var idx = input_obj.value;
-          relaySelector.selectable[idx] = input_obj.checked;
-          relaySelector.showResults(option);
-        });
-        $('#member1').trigger('change');
-        $('.config-btn').on('change', function(e) {
-          var target = e.target;
-          var value = target.value;
-          // console.log(option, target, value);
-          switch (value) {
-            case 'id-mode':
-              option['id-mode'] = target.checked;
-              relaySelector.showResults(option);
-              break;
-            case 'id-table':
-              option['id-table'] = target.checked;
-              relaySelector.showName(option);
-          }
-        });
+      relaySelector = new RelayMemberSelector();
+      relaySelector.setMembers(members);
+      relaySelector.setNotes(notes);
+      option = {
+        'id-mode': document.getElementById("btn-id-mode").checked,
+        'id-table': document.getElementById("btn-id-table").checked
+      };
+      relaySelector.showName(option);
+      console.log(option);
+      // selectタグの中身を入れる
+      $.each(members, function() {
+        $('#member1').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
+        $('#member2').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
+        $('#member3').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
+        $('#member4').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
+      });
+      $('#member1, #member2, #member3, #member4').on('change', function() {
+        relaySelector.showResults(option);
+      });
+      relaySelector.showMembers();
+      $('.member_selection').on('change', function(e) {
+        var input_obj = e.target;
+        var idx = input_obj.value;
+        relaySelector.selectable[idx] = input_obj.checked;
+        relaySelector.showResults(option);
+      });
+      $('#member1').trigger('change');
+      $('.config-btn').on('change', function(e) {
+        var target = e.target;
+        var value = target.value;
+        // console.log(option, target, value);
+        switch (value) {
+          case 'id-mode':
+            option['id-mode'] = target.checked;
+            relaySelector.showResults(option);
+            break;
+          case 'id-table':
+            option['id-table'] = target.checked;
+            relaySelector.showName(option);
+        }
+      });
     });
-</script>
+  </script>
 
-<style type="text/css">
-h1 {
-    font-size: 120%;
-}
-.member-list {
-    font-size: 12px;
-}
-.member-list th, .member-list td {
-    border: 1px solid #c3c3c3;
-}
-.member-list thead tr {
-   background-color: #e0e0e0;
-}
-.member-list tbody tr {
-   background-color: #ffffff;
-}
-.member-list tbody tr:nth-child(even) { /* 偶数番目の指定*/
-   background-color: #f6f6f6;
-}
-.member-list .cell1, .member-list .cell2, .member-list .cell3, .member-list .cell4 {
-    width: 120px;
-}
-.member-list .cell5 {
-    width: 35px;
-}
-.member-list .cell6 {
-    width: 280px;
-}
-</style>
-
+  <style type="text/css">
+    h1 {
+      font-size: 120%;
+    }
+    .member-list {
+      font-size: 12px;
+    }
+    .member-list th, .member-list td {
+      border: 1px solid #c3c3c3;
+    }
+    .member-list thead tr {
+      background-color: #e0e0e0;
+    }
+    .member-list tbody tr {
+      background-color: #ffffff;
+    }
+    .member-list tbody tr:nth-child(even) { /* 偶数番目の指定*/
+      background-color: #f6f6f6;
+    }
+    .member-list .cell1, .member-list .cell2, .member-list .cell3, .member-list .cell4 {
+      width: 120px;
+    }
+    .member-list .cell5 {
+      width: 35px;
+    }
+    .member-list .cell6 {
+      width: 280px;
+    }
+  </style>
 </head>
 <body>
-
-<h1>リレーメンバー選択くん</h1>
-<div id="config">
+  <h1>リレーメンバー選択くん</h1>
+  <div id="config">
     表示
     <input type="checkbox" class="config-btn" name="id-mode" value="id-mode" id="btn-id-mode" checked="false">
     <label for="btn-id-mode">IDで表示</label>
     <input type="checkbox" class="config-btn" name="id-table" value="id-table" id="btn-id-table">
     <label for="btn-id-table">ID対応表</label>
-</div>
-<h4>この人達から選ぶ</h4>
-<div id="member-select"></div>
-<h4>メンバ選択</h4>
-<div>
+  </div>
+  <h4>この人達から選ぶ</h4>
+  <div id="member-select"></div>
+  <h4>メンバ選択</h4>
+  <div>
     ひとりめ
     <select id="member1">
-        <option value="">---</option>
+      <option value="">---</option>
     </select><br>
     ふたりめ
     <select id="member2">
-        <option value="">---</option>
+      <option value="">---</option>
     </select><br>
     さんにんめ
     <select id="member3">
-        <option value="">---</option>
+      <option value="">---</option>
     </select><br>
     監督
     <select id="member4">
-        <option value="">---</option>
+      <option value="">---</option>
     </select><br>
-</div>
+  </div>
 
-<table border="1" id="member_profile">
+  <table border="1" id="member_profile">
     <thead>
-    <tr>
+      <tr>
         <th class="name">name</th>
         <th class="id" >id</th>
         <th class="rate">rate</th>
@@ -452,12 +450,11 @@ h1 {
     </thead>
     <tbody id="name_table">
     </tbody>
-</table>
+  </table>
 
-
-<table class="member-list">
+  <table class="member-list">
     <thead>
-    <tr>
+      <tr>
         <th class="cell1">1</th>
         <th class="cell2">2</th>
         <th class="cell3">3</th>
@@ -465,11 +462,10 @@ h1 {
         <th class="cell5">sum</th>
         <th class="cell5">potential</th>
         <th class="cell6">note</th>
-    </tr>
+      </tr>
     </thead>
     <tbody id="result">
     </tbody>
-</table>
-
+  </table>
 </body>
 </html>
