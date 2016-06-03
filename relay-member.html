@@ -7,27 +7,27 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 <script type="text/javascript">
     var members = [
-        { name: 'かまぼこ', id: 'kamaboko21', rate: 2764, max:2926  },
-        { name: 'みるふぃ', id: 'millfy', rate: 2748, max:2748  },
-        { name: '木箱', id: 'BLACK.RX', rate: 2142, max:2142 },
-        { name: 'ゆー', id: 'alla breve', rate: 2115, max:2224 },
-        { name: 'てっそ', id: 'DragonQuarter', rate: 1936, max:2167 },
-        { name: 'tr', id: 'merumon', rate: 1732, max:1732 },
-        { name: 'ニノン', id: 'transition_game', rate: 1724, max:1791 },
-        { name: 'いまい', id: 'megane-wo-gurun', rate: 1717, max:1717 },
-        { name: 'かーみ', id: 'G.G.ka-mi', rate: 1695, max:2014},
-        { name: 'さぼり', id: 'sawarin', rate: 1671, max:1790 },
-        { name: 'DoG', id: 'skziun', rate: 1655, max: 1655 },
-        { name: '半袖', id: 'cosmotown', rate: 1100, max:1114 },
-        { name: 'あひる', id: 'ahirutueee', rate: 966, max:1069 },
-        { name: 'ゼノフォべ', id: 'xenophobe', rate: 946, max:946 },
-        { name: '牛乳', id: 'sunnyspot', rate: 919, max:924 },
-        { name: 'よかおじ', id: 'SPACEACE', rate: 773, max:1005 },
-        { name: 'やくたみ', id: 'itirin', rate: 640, max:640 },
-        { name: 'サンダー', id: 'thunder9', rate: 624, max:747 },
-        { name: '佐賀', id: 'shigasan', rate: 515, max:693 },
-        { name: 'うどん', id: '3cha-man', rate: 508, max:681 },
-        { name: '箙', id: 'Quiver_algebra', rate: 479, max:532 }
+        { name: 'かまぼこ', id: 'kamaboko21', rate: 2764, max:2926, type: '居飛車'  },
+        { name: 'みるふぃ', id: 'millfy', rate: 2748, max:2748, type: '左美濃'  },
+        { name: '木箱', id: 'BLACK.RX', rate: 2142, max:2142, type: '居飛車' },
+        { name: 'ゆー', id: 'alla breve', rate: 2115, max:2224, type: '居飛車' },
+        { name: 'てっそ', id: 'DragonQuarter', rate: 1936, max:2167, type: '振り飛車' },
+        { name: 'tr', id: 'merumon', rate: 1732, max:1732, type: '左美濃' },
+        { name: 'ニノン', id: 'transition_game', rate: 1724, max:1791, type: '居飛車' },
+        { name: 'いまい', id: 'megane-wo-gurun', rate: 1717, max:1717, type: '居飛車' },
+        { name: 'かーみ', id: 'G.G.ka-mi', rate: 1695, max:2014, type: '振り飛車'},
+        { name: 'さぼり', id: 'sawarin', rate: 1671, max:1790, type: '居飛車' },
+        { name: 'DoG', id: 'skziun', rate: 1655, max: 1655, type: '振り飛車' },
+        { name: '半袖', id: 'cosmotown', rate: 1100, max:1114, type: '振り飛車' },
+        { name: 'あひる', id: 'ahirutueee', rate: 966, max:1069, type: 'あひる' },
+        { name: 'ゼノフォべ', id: 'xenophobe', rate: 946, max:946, type: '振り飛車' },
+        { name: '牛乳', id: 'sunnyspot', rate: 919, max:924, type: '振り飛車' },
+        { name: 'よかおじ', id: 'SPACEACE', rate: 773, max:1005, type: '居飛車' },
+        { name: 'やくたみ', id: 'itirin', rate: 640, max:640, type: '居飛車' },
+        { name: 'サンダー', id: 'thunder9', rate: 624, max:747, type: '居飛車' },
+        { name: '佐賀', id: 'shigasan', rate: 515, max:693, type: 'オールラウンダー' },
+        { name: 'うどん', id: '3cha-man', rate: 508, max:681, type: '振り飛車' },
+        { name: '箙', id: 'Quiver_algebra', rate: 479, max:532, type: '居飛車' }
     ];
     var notes = [
         // 基準値超え
@@ -140,6 +140,16 @@
         // 一旦全て未選択にする
         for (var i = 0; i < self.members.length; i++) {
             self.members[i].selected = false;
+        }
+        
+        // 除外する人
+        {
+	        var index;
+	        index=self.getMemberIndexbyName($('#member' + 4).val());
+	        if(index != null)
+	        {
+   			    self.members[index].selected = true;
+   			}
         }
         // #member103で選択中の値を取得してself.combinationの値にする
         for (var i = 1; i <= 3; i++) {
@@ -275,6 +285,22 @@
         );
       });
     };
+    RelayMemberSelector.prototype.showName = function(option) {
+    
+    	$('#name_table').empty();
+    	for (var idx in members)
+    	{
+	        $('#name_table').append(
+	          '<tr>'
+	          + '<td>' + members[idx].name + '</td>'
+	          + '<td>' + members[idx].id + '</td>'
+	          + '<td>' + members[idx].rate + '</td>'
+	          + '<td>' + members[idx].type + '</td>'
+	          + '</tr>'
+	        );
+	    }
+    
+    }
     $(function() {
         relaySelector = new RelayMemberSelector();
         relaySelector.setMembers(members);
@@ -288,8 +314,9 @@
             $('#member1').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
             $('#member2').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
             $('#member3').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
+            $('#member4').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
         });
-        $('#member1, #member2, #member3').on('change', function() {
+        $('#member1, #member2, #member3, #member4').on('change', function() {
           relaySelector.showResults(option);
         });
         $('#member1').trigger('change');
@@ -301,6 +328,8 @@
             option['id-mode'] = target.checked;
             relaySelector.showResults(option);
           } else {
+            option['id-table'] = target.checked;
+            relaySelector.showName(option);
           }
         });
     });
@@ -344,7 +373,7 @@ h1 {
     表示
     <input type="checkbox" class="config-btn" name="id-mode" value="id-mode" id="btn-id-mode" checked="false">
     <label>IDで表示</label>
-    <input type="checkbox" class="config-btn" name="id-table" value="1" id="btn2">
+    <input type="checkbox" class="config-btn" name="id-table" value="id-table" id="btn2">
     <label>ID対応表</label>
 </div>
 
@@ -361,7 +390,25 @@ h1 {
     <select id="member3">
         <option value="">---</option>
     </select><br>
+    監督
+    <select id="member4">
+        <option value="">---</option>
+    </select><br>
 </div>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th class="name">name</th>
+        <th class="id" >id</th>
+        <th class="rate">rate</th>
+        <th class="rate">type</th>
+    </thead>
+    <tbody id="name_table">
+    </tbody>
+</table>
+
+
 <table class="member-list">
     <thead>
     <tr>
