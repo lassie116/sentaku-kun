@@ -110,11 +110,15 @@
         this.combination = [];
         this.combinationList = [];
         this.notes = {};
+        this.selectable = []; // 選択する候補にいれるかどうか
     };
     RelayMemberSelector.prototype.setMembers = function(members) {
         var self = this;
         self.members = members;
         self.n = members.length;
+        for (var i = 0,l=members.length;i<l;i++){
+          self.selectable[i] = true;
+        }
     };
     RelayMemberSelector.prototype.setNotes = function(notes) {
         var self = this;
@@ -141,7 +145,7 @@
         for (var i = 0; i < self.members.length; i++) {
             self.members[i].selected = false;
         }
-        // #member103で選択中の値を取得してself.combinationの値にする
+        // #member1..3で選択中の値を取得してself.combinationの値にする
         for (var i = 1; i <= 3; i++) {
             if ($('#member' + i).val()) {
                 var index;
@@ -178,6 +182,10 @@
             for (var i = curIndex; i < self.n; i++) {
                 // 選択済みはスキップ
                 if (self.members[i].selected) {
+                    continue;
+                }
+                // 候補にはいっていない人もスキップ
+                if (!self.selectable[i]) {
                     continue;
                 }
                 self.combination[depth] = i;
@@ -256,6 +264,7 @@
       $('#result').empty();
       $.each(combinations, function() {
         //console.log(this.names.join(' / ') + '(' + this.rate + ')');
+        //console.log(this);
         var labels;
         if (option["id-mode"]) {
           labels = this.ids;
@@ -275,6 +284,18 @@
         );
       });
     };
+    RelayMemberSelector.prototype.showMembers = function() {
+        var idx = 0;
+        var self = this;
+        $("#member-select").empty();
+        $.each(members,function(){
+          var input_str = "<input type='checkbox' value='" + idx +
+                          "' class='member_selection' checked='" +
+                          self.selectable[idx] + "' />";
+          $("#member-select").append(input_str + this.name);
+          idx++;
+        });
+    }
     $(function() {
         relaySelector = new RelayMemberSelector();
         relaySelector.setMembers(members);
@@ -290,6 +311,13 @@
             $('#member3').append('<option value="' + this.name + '">' + this.name + ' (' + this.rate +  ')</option>');
         });
         $('#member1, #member2, #member3').on('change', function() {
+          relaySelector.showResults(option);
+        });
+        relaySelector.showMembers();
+        $('.member_selection').on('change', function(e) {
+          var input_obj = e.target;
+          var idx = input_obj.value;
+          relaySelector.selectable[idx] = input_obj.checked;
           relaySelector.showResults(option);
         });
         $('#member1').trigger('change');
@@ -347,7 +375,9 @@ h1 {
     <input type="checkbox" class="config-btn" name="id-table" value="1" id="btn2">
     <label>ID対応表</label>
 </div>
-
+<h4>この人達から選ぶ</h4>
+<div id="member-select"></div>
+<h4>メンバ選択</h4>
 <div>
     ひとりめ
     <select id="member1">
