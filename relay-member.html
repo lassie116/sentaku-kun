@@ -123,6 +123,7 @@
       this.notes = {};
       this.selectable = []; // 選択する候補にいれるかどうか
       this.match_table = []; // 相性テーブル
+      this.preserve = []; // 仮確定データ
     };
     RelayMemberSelector.prototype.setMembers = function(members) {
       var self = this;
@@ -142,6 +143,7 @@
           line.push(0);
         }
       }
+      // console.log(self.match_table);
 
       // match_table 設定
       for (var i = 0,ml=match_table.length;i<ml;i++) {
@@ -348,7 +350,43 @@
         if (b.rate > a.rate) return 1;
         return 0;
       });
+
+      var preserve_idx = 0;
+      $('#team-table-body').empty();
+      $.each(self.preserve, function() {
+        var labels;
+        if (option["id-mode"]) {
+          labels = this.ids;
+        } else {
+          labels = this.names;
+        }
+        var rate_list = [];
+        for (var i = 0,l=this.names.length;i<l;i++){
+          var name = this.names[i];
+          var idx = self.getMemberIndexbyName(name);
+          rate_list.push(self.members[idx].rate)
+        }
+        $('#team-table-body').append(
+          '<tr>'
+            + '<td><button class="team-delete-btn" value="'
+            + preserve_idx
+            + '">削除</button></td>'
+            + '<td>' + labels[0] + '(' + rate_list[0] + ') </td>'
+            + '<td>' + labels[1] + '(' + rate_list[1] + ') </td>'
+            + '<td>' + labels[2] + '(' + rate_list[2] + ') </td>'
+            + '<td>' + labels[3] + '(' + rate_list[3] + ') </td>'
+            + '<td>' + this.rate + '</td>'
+            + '<td>' + this.max  + '</td>'
+            //+ '<td>' + this.good + '</td>'
+            //+ '<td>' + this.bad  + '</td>'
+            + '<td>' + this.note + '</td>'
+            + '</tr>'
+        );
+        preserve_idx += 1;
+      });
+
       $('#result').empty();
+      var combi_idx = 0;
       $.each(combinations, function() {
         //console.log(this.names.join(' / ') + '(' + this.rate + ')');
         //console.log(this);
@@ -365,18 +403,49 @@
           rate_list.push(self.members[idx].rate)
         }
         $('#result').append(
-            '<tr>'
+          '<tr>'
+            + '<td><button class="team-btn" value="' +  combi_idx + '">選択</button></td>'
             + '<td>' + labels[0] + '(' + rate_list[0] + ') </td>'
             + '<td>' + labels[1] + '(' + rate_list[1] + ') </td>'
             + '<td>' + labels[2] + '(' + rate_list[2] + ') </td>'
             + '<td>' + labels[3] + '(' + rate_list[3] + ') </td>'
             + '<td>' + this.rate + '</td>'
             + '<td>' + this.max  + '</td>'
-            + '<td>' + this.good + '</td>'
-            + '<td>' + this.bad  + '</td>'
+            // + '<td>' + this.good + '</td>'
+            // + '<td>' + this.bad  + '</td>'
             + '<td>' + this.note + '</td>'
             + '</tr>'
-            );
+        );
+        combi_idx += 1;
+      });
+      $(".team-btn").on('click',function(e) {
+        // console.log(e.target.value);
+        var idx = e.target.value;
+        // console.log(combinations[idx]);
+
+        var data = combinations[idx];
+        self.preserve.push(data);
+        var namelist = data.names
+        for (var i = 0, l = data.names.length;i < l;i++) {
+          var idx = self.getMemberIndexbyName(data.names[i]);
+          self.selectable[idx] = false;
+        }
+        self.showResults(option);
+      });
+      $(".team-delete-btn").on('click',function(e) {
+        // console.log(e.target.value);
+        var idx = e.target.value;
+        // console.log(combinations[idx]);
+
+        var data = self.preserve[idx];
+        // self.preserve.push(data);
+        self.preserve.splice(idx,1);
+        var namelist = data.names
+        for (var i = 0, l = data.names.length;i < l;i++) {
+          var idx = self.getMemberIndexbyName(data.names[i]);
+          self.selectable[idx] = true;
+        }
+        self.showResults(option);
       });
     };
 
@@ -528,8 +597,23 @@
         }
       });
       $('.match-selector').on('change',function(e) {
-        console.log(e.target);
-        console.log(e.target.src_id);
+        var self = relaySelector;
+        // console.log(e.target);
+        var obj = $(e.target);
+        var src_id = parseInt(obj.attr("src_id"));
+        var target_id = parseInt(obj.attr("target_id"));
+        var select_idx = parseInt(e.target.selectedIndex);
+        // console.log("(" + src_id + "," + target_id + ")");
+        if (select_idx === 0) {
+          self.match_table[src_id][target_id] = 0;
+        } else if (select_idx === 1) {
+          self.match_table[src_id][target_id] = 1;
+        } else {
+          self.match_table[src_id][target_id] = -1;
+        }
+        // console.log(self.match_table[src_id][target_id]);
+        // console.log(self.match_table);
+        self.showResults(option);
       });
       $('#member1').trigger('change');
       $('.config-btn').on('change', function(e) {
@@ -577,6 +661,9 @@
     .member-list .cell6 {
       width: 280px;
     }
+    .member-list .cell7 {
+      width: 60px;
+    }
 
     table.match-table {
       border-collapse: collapse;
@@ -601,10 +688,29 @@
     <input type="checkbox" class="config-btn" name="id-table" value="id-table" id="btn-id-table">
     <label for="btn-id-table">ID対応表</label>
   </div>
+<!-- 
   <h4 id="member-select-header">この人達から選ぶ (クリックで表示/非表示)</h4>
   <div id="member-select"></div>
   <h4 id="match-table-header">相性設定 (クリックで表示/非表示) </h4>
   <div id="match-table-div"></div>
+  -->
+  <h4>仮確定</h4>
+  <table class="member-list">
+    <thead>
+      <tr>
+        <th class="cell7"></th>
+        <th class="cell1">1</th>
+        <th class="cell2">2</th>
+        <th class="cell3">3</th>
+        <th class="cell4">4</th>
+        <th class="cell5">sum</th>
+        <th class="cell5">potential</th>
+        <th class="cell6">note</th>
+      </tr>
+    </thead>
+    <tbody id="team-table-body">
+    </tbody>
+  </table>
   <h4>メンバ選択</h4>
   <div>
     ひとりめ
@@ -640,14 +746,13 @@
   <table class="member-list">
     <thead>
       <tr>
+        <th class="cell7"></th>
         <th class="cell1">1</th>
         <th class="cell2">2</th>
         <th class="cell3">3</th>
         <th class="cell4">4</th>
         <th class="cell5">sum</th>
         <th class="cell5">potential</th>
-        <th class="cell5">相性良</th>
-        <th class="cell5">相性悪</th>
         <th class="cell6">note</th>
       </tr>
     </thead>
