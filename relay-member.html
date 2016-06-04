@@ -30,6 +30,16 @@
       { name: 'うどん', id: '3cha-man', rate: 508, max:681, type: '振り飛車' },
       { name: '箙', id: 'Quiver_algebra', rate: 479, max:532, type: '居飛車' }
     ];
+    var match_table = [
+      {name: 'ニノン', good:['かまぼこ','てっそ','tr','いまい','DoG'], bad:['かーみ']},
+      {name: 'よかおじ', good:[], bad:['うどん']},
+      {name: 'tr', good:['みるふぃ'], bad:[]},
+      {name: 'みるふぃ', good:['tr'], bad:[]},
+      { name: '佐賀',good:['かまぼこ','牛乳','ゆー'],bad:[]},
+      { name: 'かまぼこ',good:['佐賀','牛乳','ゆー'],bad:[]},
+      { name: 'ゆー',good:['佐賀','かまぼこ','牛乳'],bad:[]},
+      { name: '牛乳',good:['佐賀','かまぼこ','ゆー'],bad:[]},
+    ]
     var notes = [
       // 基準値超え
       //{
@@ -112,13 +122,46 @@
       this.combinationList = [];
       this.notes = {};
       this.selectable = []; // 選択する候補にいれるかどうか
+      this.match_table = []; // 相性テーブル
     };
     RelayMemberSelector.prototype.setMembers = function(members) {
       var self = this;
       self.members = members;
       self.n = members.length;
-      for (var i = 0,l=members.length;i<l;i++){
+
+      var l = members.length;
+      for (var i = 0;i<l;i++){
         self.selectable[i] = true;
+      }
+
+      // match_table 初期化
+      for (var i = 0;i<l;i++){
+        var line = [];
+        self.match_table.push(line);
+        for (var j = 0;j<l;j++){
+          line.push(0);
+        }
+      }
+
+      // match_table 設定
+      for (var i = 0,ml=match_table.length;i<ml;i++) {
+        var t = match_table[i];
+        var name = t.name;
+        var src_id = self.getMemberIndexbyName(name);
+
+        // good
+        for (var j = 0,l=t.good.length;j<l;j++) {
+          var tname = t.good[j];
+          var t_id = self.getMemberIndexbyName(tname);
+          self.match_table[src_id][t_id] = 1;
+        }
+
+        // bad
+        for (var j = 0,l=t.bad.length;j<l;j++) {
+          var tname = t.bad[j];
+          var t_id = self.getMemberIndexbyName(tname);
+          self.match_table[src_id][t_id] = -1;
+        }
       }
     };
     RelayMemberSelector.prototype.setNotes = function(notes) {
@@ -211,7 +254,10 @@
         var names = self.getMemberNamesByCombination(self.combination);
         var ids = self.getMemberIdsByCombination(self.combination);
         var note = self.getNoteByCombination(self.combination);
-        self.combinationList.push({ names: names, ids: ids, rate: sum, max: maxrate, note: note });
+        var good_sum = self.sumGood(self.combination);
+        var bad_sum = self.sumBad(self.combination);
+        self.combinationList.push({ names: names, ids: ids, rate: sum, max: maxrate, note: note ,
+                                    good: good_sum, bad: bad_sum});
       }
     };
     RelayMemberSelector.prototype.sumRate = function(combination) {
@@ -229,6 +275,36 @@
       for (var i = 0; i < self.k; i++) {
         var index = combination[i];
         sum += self.members[index].max;
+      }
+      return sum;
+    };
+    RelayMemberSelector.prototype.sumGood = function(combination) {
+      var l = combination.length;
+      var sum = 0;
+      for (var src_idx = 0; src_idx < l; src_idx++){
+        var src_id = combination[src_idx];
+        for (var t_idx = 0; t_idx < l; t_idx++){
+          if (src_idx === t_idx) continue;
+          var t_id = combination[t_idx];
+          if (this.match_table[src_id][t_id] === 1) {
+            sum += 1;
+          }
+        }
+      }
+      return sum;
+    };
+    RelayMemberSelector.prototype.sumBad = function(combination) {
+      var l = combination.length;
+      var sum = 0;
+      for (var src_idx = 0; src_idx < l; src_idx++){
+        var src_id = combination[src_idx];
+        for (var t_idx = 0; t_idx < l; t_idx++){
+          if (src_idx === t_idx) continue;
+          var t_id = combination[t_idx];
+          if (this.match_table[src_id][t_id] === -1) {
+            sum -= 1;
+          }
+        }
       }
       return sum;
     };
@@ -290,6 +366,8 @@
             + '<td>' + labels[3] + '</td>'
             + '<td>' + this.rate + '</td>'
             + '<td>' + this.max  + '</td>'
+            + '<td>' + this.good + '</td>'
+            + '<td>' + this.bad  + '</td>'
             + '<td>' + this.note + '</td>'
             + '</tr>'
             );
@@ -301,6 +379,7 @@
       var self = this;
       $("#member-select").empty();
       $.each(members,function(){
+        $("#member-select").hide();
         var input = $("<input>", {
           type: "checkbox",
           value: idx,
@@ -334,6 +413,67 @@
       }
     }
 
+    RelayMemberSelector.prototype.makeMatchTable = function() {
+      var self = this;
+      $("#match-table-div").empty();
+      var table = $("<table>",{
+        class : "match-table"
+      })
+      var l = self.members.length;
+
+      // header
+      var thead = $("<thead>");
+      var tr = $("<tr>");
+      for (var th_idx = 0;th_idx<=l;th_idx++){
+        if (th_idx === 0) {
+          var th = $("<th>",{class:"blank"});
+        } else {
+          var th = $("<th>").text(self.members[th_idx-1].name);
+        }
+        tr.append(th);
+      }
+      thead.append(tr)
+      table.append(thead)
+
+      // table row
+      for (var tr_idx = 0;tr_idx<l;tr_idx++){
+        var tr = $("<tr>");
+        for (var td_idx = 0;td_idx<=l;td_idx++){
+          if (td_idx === 0) {
+            var td = $("<td>").text(self.members[tr_idx].name);
+          } else if ((td_idx - 1) === tr_idx) {
+            var td = $("<td>",{class:"blank"});
+          } else {
+            var td = $("<td>",{
+              class:"match-input",
+            });
+            var select = $("<select>",{
+              class : "match-selector",
+              src_id: td_idx - 1,
+              target_id: tr_idx,
+            });
+
+            var option_list = [
+              "<option value='0'>---</option><option value='1'>良い</option>" +
+                "<option value='-1' selected=true>悪い</option>",
+              "<option value='0'>---</option><option value='1'>良い</option>" +
+                "<option value='-1'>悪い</option>",
+              "<option value='0'>---</option><option value='1' selected=true>良い</option>" +
+                "<option value='-1'>悪い</option>",
+            ];
+            select.append(
+              option_list[(self.match_table[td_idx - 1][tr_idx] + 1)]
+            );
+            td.append(select);
+          }
+          tr.append(td);
+        }
+        table.append(tr);
+      }
+
+      $("#match-table-div").hide();
+      $("#match-table-div").append(table);
+    }
 
     $(function() {
       relaySelector = new RelayMemberSelector();
@@ -355,12 +495,35 @@
       $('#member1, #member2, #member3, #member4').on('change', function() {
         relaySelector.showResults(option);
       });
+
       relaySelector.showMembers();
+      relaySelector.makeMatchTable();
+
       $('.member_selection').on('change', function(e) {
         var input_obj = e.target;
         var idx = input_obj.value;
         relaySelector.selectable[idx] = input_obj.checked;
         relaySelector.showResults(option);
+      });
+      $('#member-select-header').on('click', function(e) {
+        var obj = $("#member-select");
+        if (obj.css("display") === "none") {
+          obj.show();
+        } else {
+          obj.hide();
+        }
+      });
+      $('#match-table-header').on('click', function(e) {
+        var obj = $("#match-table-div");
+        if (obj.css("display") === "none") {
+          obj.show();
+        } else {
+          obj.hide();
+        }
+      });
+      $('.match-selector').on('change',function(e) {
+        console.log(e.target);
+        console.log(e.target.src_id);
       });
       $('#member1').trigger('change');
       $('.config-btn').on('change', function(e) {
@@ -408,6 +571,19 @@
     .member-list .cell6 {
       width: 280px;
     }
+
+    table.match-table {
+      border-collapse: collapse;
+    }
+    .match-table th, .match-table td {
+      font-size: 12px;
+      // border: 1px solid #c3c3c3;
+      width: 60px;
+    }
+    .match-table td.blank , .match-table th.blank {
+      // background-color: #c3c3c3;
+      width: 60px;
+    }
   </style>
 </head>
 <body>
@@ -419,8 +595,10 @@
     <input type="checkbox" class="config-btn" name="id-table" value="id-table" id="btn-id-table">
     <label for="btn-id-table">ID対応表</label>
   </div>
-  <h4>この人達から選ぶ</h4>
+  <h4 id="member-select-header">この人達から選ぶ (クリックで表示/非表示)</h4>
   <div id="member-select"></div>
+  <h4 id="match-table-header">相性設定 (クリックで表示/非表示) </h4>
+  <div id="match-table-div"></div>
   <h4>メンバ選択</h4>
   <div>
     ひとりめ
@@ -462,6 +640,8 @@
         <th class="cell4">4</th>
         <th class="cell5">sum</th>
         <th class="cell5">potential</th>
+        <th class="cell5">相性良</th>
+        <th class="cell5">相性悪</th>
         <th class="cell6">note</th>
       </tr>
     </thead>
