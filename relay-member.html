@@ -358,12 +358,18 @@
         } else {
           labels = this.names;
         }
+        var rate_list = [];
+        for (var i = 0,l=this.names.length;i<l;i++){
+          var name = this.names[i];
+          var idx = self.getMemberIndexbyName(name);
+          rate_list.push(self.members[idx].rate)
+        }
         $('#result').append(
             '<tr>'
-            + '<td>' + labels[0] + '</td>'
-            + '<td>' + labels[1] + '</td>'
-            + '<td>' + labels[2] + '</td>'
-            + '<td>' + labels[3] + '</td>'
+            + '<td>' + labels[0] + '(' + rate_list[0] + ') </td>'
+            + '<td>' + labels[1] + '(' + rate_list[1] + ') </td>'
+            + '<td>' + labels[2] + '(' + rate_list[2] + ') </td>'
+            + '<td>' + labels[3] + '(' + rate_list[3] + ') </td>'
             + '<td>' + this.rate + '</td>'
             + '<td>' + this.max  + '</td>'
             + '<td>' + this.good + '</td>'
