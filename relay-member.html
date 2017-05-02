@@ -8,28 +8,32 @@
   <script type="text/javascript">
     var members = [
       { name: 'かまぼこ', id: 'kamaboko21', rate: 2764, max:2926, type: '居飛車'  },
-      { name: 'みるふぃ', id: 'millfy', rate: 2748, max:2748, type: '左美濃'  },
+      // { name: 'みるふぃ', id: 'millfy', rate: 2748, max:2748, type: '左美濃'  },
       { name: '木箱', id: 'BLACK.RX', rate: 2142, max:2142, type: '居飛車' },
-      { name: 'ゆー', id: 'alla breve', rate: 2115, max:2224, type: '居飛車' },
-      { name: 'てっそ', id: 'DragonQuarter', rate: 1936, max:2167, type: '振り飛車' },
+      // { name: 'ゆー', id: 'alla breve', rate: 2115, max:2224, type: '居飛車' },
+      // { name: 'てっそ', id: 'DragonQuarter', rate: 1936, max:2167, type: '振り飛車' },
       { name: 'tr', id: 'merumon', rate: 1732, max:1732, type: '左美濃' },
       { name: 'ニノン', id: 'transition_game', rate: 1724, max:1791, type: '居飛車' },
       { name: 'いまい', id: 'megane-wo-gurun', rate: 1717, max:1717, type: '居飛車' },
-      { name: 'かーみ', id: 'G.G.ka-mi', rate: 1695, max:2014, type: '振り飛車'},
+      // { name: 'かーみ', id: 'G.G.ka-mi', rate: 1695, max:2014, type: '振り飛車'},
       { name: 'さぼり', id: 'sawarin', rate: 1671, max:1790, type: '居飛車' },
       { name: 'DoG', id: 'skziun', rate: 1655, max: 1655, type: '振り飛車' },
       { name: '半袖', id: 'cosmotown', rate: 1100, max:1114, type: '振り飛車' },
       { name: 'あひる', id: 'ahirutueee', rate: 966, max:1069, type: 'あひる' },
       { name: 'ゼノフォべ', id: 'xenophobe', rate: 946, max:946, type: '振り飛車' },
-      { name: '牛乳', id: 'sunnyspot', rate: 919, max:924, type: '振り飛車' },
+      // { name: '牛乳', id: 'sunnyspot', rate: 919, max:924, type: '振り飛車' },
       { name: 'よかおじ', id: 'SPACEACE', rate: 773, max:1005, type: '居飛車' },
       { name: 'やくたみ', id: 'itirin', rate: 640, max:640, type: '居飛車' },
       { name: 'サンダー', id: 'thunder9', rate: 624, max:747, type: '振り飛車' },
-      { name: '茶王', id: 'J_Addai', rate: 531, max:584, type: '振り飛車' },
+      // { name: '茶王', id: 'J_Addai', rate: 531, max:584, type: '振り飛車' },
       { name: '佐賀', id: 'shigasan', rate: 515, max:693, type: 'オールラウンダー' },
       { name: 'うどん', id: '3cha-man', rate: 508, max:681, type: '振り飛車' },
-      { name: '箙', id: 'Quiver_algebra', rate: 479, max:532, type: '居飛車' }
+      { name: '箙', id: 'Quiver_algebra', rate: 479, max:532, type: '居飛車' },
+
+      { name: '三人で参加', id: '', rate: 1600, max: 1600, type: 'ダミー' }
     ];
+    var match_table = [];  // TODO: 人間関係を更新しよう。
+    /*
     var match_table = [
       {name: 'ニノン', good:['かまぼこ','てっそ','tr','いまい','DoG'], bad:['かーみ']},
       {name: 'よかおじ', good:[], bad:['うどん']},
@@ -40,6 +44,9 @@
       { name: 'ゆー',good:['佐賀','かまぼこ','牛乳'],bad:[]},
       { name: '牛乳',good:['佐賀','かまぼこ','ゆー'],bad:[]},
     ]
+    */
+    var notes = [];  // TODO: チーム案を更新しよう。
+    /*
     var notes = [
       // 基準値超え
       //{
@@ -132,6 +139,7 @@
       //   note: 'さぼり監督チームあひる(三人確定)'
       // }
     ];
+    */
     var RelayMemberSelector = function() {
       this.members = null;
       this.maxRate = 6400; // 上限レート
